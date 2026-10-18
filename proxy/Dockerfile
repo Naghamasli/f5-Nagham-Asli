@@ -1,11 +1,13 @@
 # Proxy image inherited from the previous team.
 
-FROM ubuntu:24.04
+FROM nginx:stable-alpine
+
+RUN rm -f /etc/nginx/conf.d/default.conf && \
+    chown -R nginx:nginx /var/cache/nginx
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
-RUN apt-get update && \
-    apt-get install -y nginx curl htop vim git
+USER nginx
 
 EXPOSE 80
 

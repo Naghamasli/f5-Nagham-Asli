@@ -1,26 +1,40 @@
+
 services:
   backend:
     build:
       context: ./backend
-    # Published for local debugging: curl http://localhost:8080/health
+    # Published for local debugging
     ports:
       - "8080:8080"
     environment:
       - PORT=8080
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=2)"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+      start_period: 5s
 
   proxy:
     build:
       context: ./proxy
-    # Published for local debugging: curl http://localhost:8081/nginx-health
     ports:
       - "8081:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/nginx-health"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+      start_period: 5s
 
   test-runner:
     build:
       context: ./test-runner
     depends_on:
-      - proxy
+      proxy:
+        condition: service_healthy
     environment:
       - PROXY_URL=http://proxy:80
