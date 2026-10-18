@@ -103,7 +103,10 @@ Confirmed Git mode 100755.
 
 Successfully ran ./scripts/run-tests.sh directly.
 
-GitHub Actions verification is still pending.
+- Fixed the executable permission using `chmod +x scripts/run-tests.sh` and ensured Git recorded mode `100755`.
+- Verified that `./scripts/run-tests.sh` executes successfully locally.
+- Pushed the changes to `fix/devops-challenge` and opened Pull Request #1 into `main`.
+- Confirmed that GitHub Actions CI Pipeline passed on both the branch push and the Pull Request.
 ---
 
 ## Bonus questions
